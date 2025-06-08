@@ -20,7 +20,6 @@ contract HelperConfig is Script {
 
     uint256 public constant SEPOLIA_ETH_CHAIN_ID = 11155111;
 
-
     // When i deploy the contract, i check on which chain i am (in function of the chain_id) and i call the correct
     // function
     //  - if chain_id of eth seplia: i set the price feed of eth sepolia
@@ -35,9 +34,7 @@ contract HelperConfig is Script {
 
     // I set the price feed on ETH sepolia chain
     function getSepoliaETHConfig() public pure returns (NetworkConfig memory) {
-        NetworkConfig memory sepoliaConfig = NetworkConfig({
-        priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306
-    });
+        NetworkConfig memory sepoliaConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
 
         return sepoliaConfig;
     }
@@ -51,7 +48,6 @@ contract HelperConfig is Script {
         if (activeNetworkConfig.priceFeed != address(0)) {
             return activeNetworkConfig;
         }
-
 
         vm.startBroadcast();
         MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
