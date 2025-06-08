@@ -15,15 +15,21 @@ contract HelperConfig is Script {
         address priceFeed; // ETH/USD price feed address
     }
 
+    uint8 public constant DECIMALS = 8;
+    int256 public constant INITIAL_PRICE = 2000e8;
+
+    uint256 public constant SEPOLIA_ETH_CHAIN_ID = 11155111;
+
+
     // When i deploy the contract, i check on which chain i am (in function of the chain_id) and i call the correct
     // function
     //  - if chain_id of eth seplia: i set the price feed of eth sepolia
     //  - else: i set the anvil price feed
     constructor() {
-        if (block.chainid == 11155111) {
+        if (block.chainid == SEPOLIA_ETH_CHAIN_ID) {
             activeNetworkConfig = getSepoliaETHConfig();
         } else {
-            activeNetworkConfig = getAnvilETHConfig();
+            activeNetworkConfig = getOrCreateAnvilETHConfig();
         }
     }
 
@@ -41,9 +47,14 @@ contract HelperConfig is Script {
         boubou la poilu
     */
 
-    function getAnvilETHConfig() public returns (NetworkConfig memory) {
+    function getOrCreateAnvilETHConfig() public returns (NetworkConfig memory) {
+        if (activeNetworkConfig.priceFeed != address(0)) {
+            return activeNetworkConfig;
+        }
+
+
         vm.startBroadcast();
-        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(8, 2000e8);
+        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
         vm.stopBroadcast();
 
         NetworkConfig memory anvilConfig = NetworkConfig({priceFeed: address(mockPriceFeed)});
