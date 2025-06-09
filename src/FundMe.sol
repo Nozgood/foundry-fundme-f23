@@ -14,7 +14,7 @@ contract FundMe {
     address[] private s_funders;
 
     // Could we make this constant?  /* hint: no! We should make it immutable! */
-    address public i_owner;
+    address private i_owner;
     uint256 public constant MINIMUM_USD = 5e18;
     AggregatorV3Interface private s_priceFeed;
 
@@ -37,7 +37,7 @@ contract FundMe {
     modifier onlyOwner() {
         // require(msg.sender == owner);
         if (msg.sender != i_owner) revert FundMe__NotOwner();
-        _;
+        _; // _; => means that all after the modifier will be executed
     }
 
     function withdraw() public onlyOwner {
@@ -54,6 +54,7 @@ contract FundMe {
         // require(sendSuccess, "Send failed");
 
         // call
+        // send to the msg.sender the the balance of the contract;
         (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
@@ -86,6 +87,10 @@ contract FundMe {
 
     function getFunder(uint256 index) external view returns (address) {
         return s_funders[index];
+    }
+
+    function getOwner() external view returns (address) {
+        return i_owner;
     }
 }
 
