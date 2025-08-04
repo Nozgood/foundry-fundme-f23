@@ -10,7 +10,9 @@ contract FundFundMe is Script {
     uint256 constant SEND_VALUE = 0.1 ether;
 
     function fundFundMe(address mostRecentlyDeployed) public {
+        vm.startBroadcast();
         FundMe(payable(mostRecentlyDeployed)).fund{value: SEND_VALUE}();
+        vm.stopBroadcast();
         console.log("Funded FundMe with %s", SEND_VALUE);
     }
 
@@ -20,9 +22,7 @@ contract FundFundMe is Script {
             block.chainid
         );
 
-        vm.startBroadcast();
         fundFundMe(mostRecentlyDeployed);
-        vm.stopBroadcast();
     }
 }
 

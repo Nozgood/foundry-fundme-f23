@@ -22,8 +22,6 @@ contract FundMeTestIntegration is Test {
 
     function testUserCanFundInteractions() public {
         FundFundMe fundFundMe = new FundFundMe();
-        vm.prank(user);
-        vm.deal(user, 1e18);
 
         fundFundMe.fundFundMe(address(fundMe));
 
